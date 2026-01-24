@@ -1,0 +1,71 @@
+{% extends "baggage_app/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg p-4 mb-4 border-0">
+            <div class="text-center mb-4">
+                <h3 class="status-header">Track Your Luggage</h3>
+                <p class="text-muted">Enter your unique Tag ID below</p>
+            </div>
+            
+            <form method="GET" action="{% url 'baggage:search_baggage' %}">
+                <div class="input-group input-group-lg shadow-sm">
+                    <span class="input-group-text bg-white border-end-0 text-muted">
+                        <i class="bi bi-qr-code-scan"></i>
+                    </span>
+                    <input type="text" name="tag_id" class="form-control border-start-0" 
+                           placeholder="e.g. FJ123456" required value="{{ request.GET.tag_id }}">
+                    <button class="btn btn-fiji px-4" type="submit">Track</button>
+                </div>
+            </form>
+        </div>
+
+        {% if baggage %}
+        <div class="card shadow p-4 border-start border-4 {% if baggage.is_overweight %}border-danger{% else %}border-success{% endif %} animate__animated animate__fadeIn">
+            
+            <div class="text-center mb-3">
+                <div class="display-5 mb-2">
+                    {% if baggage.is_overweight %}
+                        <i class="bi bi-exclamation-octagon-fill text-danger animate__animated animate__shakeX"></i>
+                    {% elif baggage.status == 'LOADED' %}
+                        <i class="bi bi-airplane-engines-fill text-success"></i>
+                    {% else %}
+                        <i class="bi bi-box-seam-fill text-warning"></i>
+                    {% endif %}
+                </div>
+                
+                <h4 class="fw-bold text-uppercase">{{ baggage.status }}</h4>
+                <p class="text-muted small">Tag ID: <strong>{{ baggage.tag_id }}</strong></p>
+                
+                {% if baggage.is_overweight %}
+                    <span class="badge bg-danger px-3 py-2">
+                        <i class="bi bi-warning"></i> OVERWEIGHT BAG
+                    </span>
+                {% endif %}
+            </div>
+            
+            <hr>
+            
+            <div class="row text-center mb-0">
+                <div class="col-6 border-end">
+                    <p class="text-muted small mb-0">PASSENGER</p>
+                    <p class="fw-bold mb-0">{{ baggage.passenger_name }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="text-muted small mb-0">WEIGHT</p>
+                    <p class="fw-bold mb-0 {% if baggage.is_overweight %}text-danger{% endif %}">
+                        {{ baggage.weight_kg }} kg
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% elif query %}
+        <div class="alert alert-warning shadow-sm text-center border-0">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Tag <strong>{{ query }}</strong> not found. Please verify the ID.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
