@@ -1,0 +1,197 @@
+﻿@model IEnumerable<FijiBRS_StaffDashboard.Models.Baggage>
+
+@{
+    ViewData["Title"] = "Staff Dashboard";
+    var totalBags = Model?.Count() ?? 0;
+    var totalWeight = Model?.Sum(b => b.WeightKg) ?? 0;
+    var loadedCount = Model?.Count(b => b.Status == "LOADED") ?? 0;
+}
+
+<style>
+    .table-warning-overweight {
+        background-color: #fff3cd !important;
+        border-left: 5px solid #dc3545 !important;
+    }
+
+    .pulse-badge {
+        animation: pulse-red 2s infinite;
+        font-weight: bold;
+    }
+
+    /* Fixed the selector warnings here */
+    @@keyframes pulse-red {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+        }
+    }
+
+    .card-stat {
+        transition: transform 0.2s;
+        min-height: 100px;
+    }
+</style>
+
+<audio id="successSound" src="https://actions.google.com/sounds/v1/communication/notification_high_intensity.ogg" preload="auto"></audio>
+<audio id="errorSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-end mb-4 mt-3">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Ground Handling Manifest</h2>
+            <p class="text-muted small mb-0"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Nadi International Airport (NAN)</p>
+        </div>
+        <div class="text-end text-dark">
+            <span class="badge bg-white text-dark border shadow-sm p-2">
+                Last Sync: <span id="syncTime" class="fw-bold">--:--:--</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card card-stat border-0 shadow-sm bg-primary text-white text-center p-3">
+                <h6 class="small text-uppercase opacity-75">Manifest Count</h6>
+                <h2 class="fw-bold mb-0" id="stat-total-bags">@totalBags</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-stat border-0 shadow-sm bg-dark text-white text-center p-3">
+                <h6 class="small text-uppercase opacity-75">Total Weight</h6>
+                <h2 class="fw-bold mb-0"><span id="stat-total-weight">@totalWeight.ToString("F1")</span> kg</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-stat border-0 shadow-sm bg-success text-white text-center p-3">
+                <h6 class="small text-uppercase opacity-75">Bags Loaded</h6>
+                <h2 class="fw-bold mb-0" id="stat-loaded-count">@loadedCount</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3 g-2">
+        <div class="col-md-6">
+            <div class="input-group shadow-sm">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="bagSearch" class="form-control border-start-0" placeholder="Search Passenger or Tag..." onkeyup="filterTable()">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select id="flightFilter" class="form-select shadow-sm" onchange="filterTable()">
+                <option value="">All Flights</option>
+                @foreach (var flight in Model?.Select(b => b.FlightNumber).Distinct().OrderBy(f => f) ?? Enumerable.Empty<string>())
+                {
+                    <option value="@flight">Flight @flight</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr class="small fw-bold text-muted">
+                        <th class="ps-3">TAG ID</th>
+                        <th>PASSENGER</th>
+                        <th>FLIGHT</th>
+                        <th>WEIGHT</th>
+                        <th>STATUS</th>
+                        <th class="text-end pe-3">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="baggageBody">
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row-@item.TagId" class="@(item.IsOverweight ? "table-warning-overweight" : "")" data-weight="@item.WeightKg">
+                                <td class="ps-3 fw-bold text-primary">@item.TagId</td>
+                                <td>@item.PassengerName</td>
+                                <td class="flight-no">@item.FlightNumber</td>
+                                <td>
+                                    @item.WeightKg kg
+                                    @if (item.IsOverweight)
+                                    {
+                                        <span class="badge bg-danger pulse-badge ms-2">HEAVY</span>
+                                    }
+                                </td>
+                                <td><span class="badge @item.StatusBadgeClass shadow-sm">@item.Status</span></td>
+                                <td class="text-end pe-3">
+                                    @if (item.Status != "LOADED")
+                                    {
+                                        <button class="btn btn-sm btn-primary shadow-sm px-3" onclick="updateStatus('@item.TagId', this)">Confirm Load</button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>LOADED</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            let searchInput = document.getElementById("bagSearch").value.toLowerCase();
+            let flightFilter = document.getElementById("flightFilter").value.toLowerCase();
+            let rows = document.querySelectorAll("#baggageBody tr");
+            let weight = 0; let bags = 0;
+
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                let flightNo = row.querySelector(".flight-no").innerText.toLowerCase();
+                let rowWeight = parseFloat(row.getAttribute("data-weight"));
+                let matches = text.includes(searchInput) && (flightFilter === "" || flightNo === flightFilter);
+                row.style.display = matches ? "" : "none";
+                if (matches) { weight += rowWeight; bags++; }
+            });
+            document.getElementById("stat-total-weight").innerText = weight.toFixed(1);
+            document.getElementById("stat-total-bags").innerText = bags;
+        }
+
+        async function updateStatus(tagId, btn) {
+            btn.disabled = true;
+            const successSound = document.getElementById("successSound");
+            const errorSound = document.getElementById("errorSound");
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8001/api/baggage/staff/${tagId}/`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'LOADED' })
+                });
+
+                if (response.ok) {
+                    // Play sound and wait slightly before reload
+                    successSound.play().catch(e => console.warn("Sound blocked"));
+                    setTimeout(() => { location.reload(); }, 600);
+                } else {
+                    errorSound.play().catch(e => console.warn("Sound blocked"));
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                errorSound.play().catch(e => console.warn("Sound blocked"));
+                alert("Django Offline");
+                btn.disabled = false;
+            }
+        }
+        setInterval(() => { document.getElementById("syncTime").innerText = new Date().toLocaleTimeString(); }, 1000);
+    </script>
+}
