@@ -1,124 +1,76 @@
-✈️ Fiji Baggage Reconciliation System (BRS)
+# ✈️ Fiji Baggage Reconciliation System (BRS)
 
-Credentials (Demo Only)
+**Credentials:**  
+`staff_admin / Fiji2026!`
 
-Username: staff_admin
-Password: Fiji2026!
+---
 
-🏗️ System Architecture
+## 🏗️ Architecture & Technology Stack
 
-This system is designed using a 3-Tier Architecture to ensure modularity, security, and scalability, aligned with aviation-grade system requirements.
+I designed this system using a **3-Tier Architecture** to ensure modularity, security, and scalability—essential requirements for critical aviation infrastructure.
 
-Presentation Layer
-        ↓
-Logic Layer (API)
-        ↓
-Data Layer (Database)
+---
 
-🧱 Technology Stack
-1️⃣ Data Layer — The Foundation
+## 1. Data Layer (The Foundation)
 
-Database: MySQL (Hosted on Aiven Cloud)
+**Database:** MySQL (Hosted on Aiven Cloud).
 
-Management Tool: DBeaver
+**Management:** Configured via DBeaver using SSL/TLS tunnels (`ca.pem`) to prevent Man-in-the-Middle attacks.
 
-Security:
+**Integrity:** Utilizes Python ORM with parameterized queries to neutralize SQL Injection threats.
 
-SSL/TLS encrypted connections using ca.pem
+---
 
-Protection against Man-in-the-Middle attacks
+## 2. Logic Layer (The Brain)
 
-Data Integrity:
+**Backend:** Django REST Framework (DRF).
 
-Python ORM
+**Role:** Acts as the *"Digital Control Tower,"* handling Authentication, Business Logic Validation (e.g., weight limits), and RESTful API routing.
 
-Parameterized queries to prevent SQL Injection
+**Integration:** Serves as the endpoint for hardware-simulated scans via Postman.
 
-2️⃣ Logic Layer — The Brain
+---
 
-Backend Framework: Django REST Framework (DRF)
+## 3. Presentation Layer (Decoupled Frontends)
 
-Responsibilities:
+### Staff Dashboard (ASP.NET MVC)
 
-Authentication & authorization
+**Platform:** Hosted on MonsterASP (Windows/IIS).
 
-Business rule validation (e.g. baggage weight limits)
+**Purpose:** A high-performance administrative interface for ground staff.
 
-RESTful API routing
+---
 
-Integration:
+### Passenger Portal (Django & Bootstrap)
 
-API endpoints tested and simulated via Postman
+**Platform:** Hosted on Render (Linux).
 
-Handles hardware-simulated baggage scans
+**Purpose:** A mobile-responsive portal for travelers to track baggage in real-time.
 
-Acts as a Digital Control Tower for all baggage operations.
+---
 
-3️⃣ Presentation Layer — Decoupled Frontends
-🧑‍✈️ Staff Dashboard
+## 🛡️ Key Security Features
 
-Framework: ASP.NET MVC
+**Data Encryption:** All cloud traffic is protected by SSL certificates to ensure passenger data privacy.
 
-Hosting: MonsterASP (Windows / IIS)
+**Audit Trail:** Every bag movement is logged in the `SCANS` table with a precise timestamp and location for full accountability.
 
-Purpose:
-High-performance administrative interface for ground staff operations
+**Zero-Trust Logic:** Backend validation ensures that a bag cannot be *"Loaded"* unless it has been *"Security Cleared."*
 
-🧳 Passenger Portal
+---
 
-Framework: Django + Bootstrap
+## 🚀 DevOps & Workflow
 
-Hosting: Render (Linux)
+**SDLC:** Followed a strict Software Development Life Cycle from requirement analysis to deployment.
 
-Purpose:
-Mobile-responsive portal for passengers to track baggage status in real time
+**CI/CD:** Automated deployment pipelines via GitHub Actions to Render, ensuring the system is always stable.
 
-🛡️ Security Features
+**Testing:** Comprehensive API testing conducted using Postman and database schema validation via DBeaver.
 
-🔐 Data Encryption
+---
 
-End-to-end SSL encryption for all cloud traffic
+## 📊 Future Enhancements
 
-🧾 Audit Trail
+**Power BI Integration:** Currently developing a Power BI Dashboard to visualize peak baggage flow and bottleneck trends.
 
-Every baggage scan recorded in the SCANS table
-
-Includes timestamp and location for full traceability
-
-🚫 Zero-Trust Validation
-
-A bag cannot be marked as Loaded
-
-Unless it is first Security Cleared
-
-🚀 DevOps & Development Workflow
-
-SDLC
-
-Requirement Analysis → Design → Development → Testing → Deployment
-
-CI/CD
-
-Automated pipelines using GitHub Actions
-
-Continuous deployment to Render
-
-Testing
-
-API testing via Postman
-
-Database schema validation via DBeaver
-
-📊 Future Enhancements
-
-📈 Power BI Analytics
-
-Visual dashboards for peak baggage flow
-
-Bottleneck and performance analysis
-
-📡 NFC / RFID Integration
-
-Mobile-based instant baggage tagging
-
-Faster scan times and improved tracking accuracy
+**NFC/RFID Support:** Exploring mobile NFC integration for instant bag tagging.
