@@ -39,6 +39,8 @@ I designed this system using a **3-Tier Architecture** to ensure modularity, sec
 
 **Purpose:** A high-performance administrative interface for ground staff.
 
+**URL:** http://fijibrs.runasp.net
+
 ---
 
 ### Passenger Portal (Django & Bootstrap)
@@ -46,6 +48,8 @@ I designed this system using a **3-Tier Architecture** to ensure modularity, sec
 **Platform:** Hosted on Render (Linux).
 
 **Purpose:** A mobile-responsive portal for travelers to track baggage in real-time.
+
+**URL:** https://fiji-brs-system.onrender.com
 
 ---
 
