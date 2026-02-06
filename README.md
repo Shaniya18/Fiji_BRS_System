@@ -72,9 +72,8 @@ I designed this system using a **3-Tier Architecture** to ensure modularity, sec
 **Testing:** Comprehensive API testing conducted using Postman and database schema validation via DBeaver.
 
 ---
-
 ## 📊 Future Enhancements
 
-**Power BI Integration:** Currently developing a Power BI Dashboard to visualize peak baggage flow and bottleneck trends.
+**Power BI Integration:** I am currently exploring the integration of a Power BI Dashboard to visualize peak baggage flow and bottleneck trends, applying the data analytics skills I developed in my previous "Farm Analytics" project.
 
 **NFC/RFID Support:** Exploring mobile NFC integration for instant bag tagging.
