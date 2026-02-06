@@ -74,6 +74,6 @@ I designed this system using a **3-Tier Architecture** to ensure modularity, sec
 ---
 ## 📊 Future Enhancements
 
-**Power BI Integration:** I am currently exploring the integration of a Power BI Dashboard to visualize peak baggage flow and bottleneck trends, applying the data analytics skills I developed in my previous "Farm Analytics" project.
+**Power BI Integration:** I am currently exploring the integration of a Power BI Dashboard to visualize peak baggage flow and bottleneck trends, applying the data analytics skills I developed in my previous **Power BI Farm Project**.
 
 **NFC/RFID Support:** Exploring mobile NFC integration for instant bag tagging.
