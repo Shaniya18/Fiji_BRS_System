@@ -77,3 +77,9 @@ I designed this system using a **3-Tier Architecture** to ensure modularity, sec
 **Power BI Integration:** I am currently exploring the integration of a Power BI Dashboard to visualize peak baggage flow and bottleneck trends, applying the data analytics skills I developed in my previous **Power BI Farm Project**.
 
 **NFC/RFID Support:** Exploring mobile NFC integration for instant bag tagging.
+## 🛠️ Local Development Setup
+1. Clone the repository.
+2. Create a virtual environment: `python -m venv venv`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run migrations: `python manage.py migrate`
+5. Start the server: `python manage.py runserver`
