@@ -1,6 +1,5 @@
 ✈️ Fiji Baggage Reconciliation System (BRS)
-[Live Demo: Passenger Portal (Render)] | [Live Demo: Staff Dashboard (MonsterASP)]
-(Credentials: staff_admin / Fiji2026!)
+Credentials: staff_admin / Fiji2026!
 
 🏗️ Architecture & Technology Stack
 I designed this system using a 3-Tier Architecture to ensure modularity, security, and scalability—essential requirements for critical aviation infrastructure.
@@ -20,17 +19,17 @@ Role: Acts as the "Digital Control Tower," handling Authentication, Business Log
 Integration: Serves as the endpoint for hardware-simulated scans via Postman.
 
 3. Presentation Layer (Decoupled Frontends)
-Staff Dashboard (ASP.NET MVC): * Platform: Hosted on MonsterASP (Windows/IIS).
+Staff Dashboard (ASP.NET MVC):
+
+Platform: Hosted on MonsterASP (Windows/IIS).
 
 Purpose: A high-performance administrative interface for ground staff.
 
-URL: http://fijibrs.runasp.net
+Passenger Portal (Django & Bootstrap):
 
-Passenger Portal (Django & Bootstrap): * Platform: Hosted on Render (Linux).
+Platform: Hosted on Render (Linux).
 
 Purpose: A mobile-responsive portal for travelers to track baggage in real-time.
-
-URL: https://fiji-brs-system.onrender.com
 
 🛡️ Key Security Features
 Data Encryption: All cloud traffic is protected by SSL certificates to ensure passenger data privacy.
